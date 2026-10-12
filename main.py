@@ -1,5 +1,6 @@
 import pygame
 from player import Player
+from board import Board
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_SPEED, DIRECTIONS
 
 def main():
@@ -10,6 +11,9 @@ def main():
 
     # Create a Clock object to track time and control FPS
     clock = pygame.time.Clock()
+
+    #Create a new board
+    board = Board()
 
     # Create a new player
     player = Player(100, 100)
@@ -46,6 +50,7 @@ def main():
         #3. RENDERING
         screen.fill((30, 30, 30)) # Fill the entire screen with dark grey.
 
+        board.draw(screen)
         player.draw(screen)
 
         # Update the display to show everything we just drew

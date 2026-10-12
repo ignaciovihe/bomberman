@@ -1,4 +1,4 @@
-from constants import DIRECTIONS, PLAYER_SPEED
+from constants import DIRECTIONS, PLAYER_SPEED, PLAYER_SIZE
 import pygame
 
 # Represents a player in the game
@@ -9,7 +9,7 @@ class Player():
         self.y = float(y)
 
     def draw(self, screen):
-        pygame.draw.rect(screen,"blue", (self.x, self.y, 40, 40))
+        pygame.draw.rect(screen,"blue", (self.x, self.y, PLAYER_SIZE, PLAYER_SIZE))
 
     def update(self, dt, pressed_directions):
         if pressed_directions:
