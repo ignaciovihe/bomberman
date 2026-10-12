@@ -1,4 +1,5 @@
 import pygame
+from player import Player
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_SPEED, DIRECTIONS
 
 def main():
@@ -10,9 +11,9 @@ def main():
     # Create a Clock object to track time and control FPS
     clock = pygame.time.Clock()
 
-    # Initial coordinates of the player
-    player_x = 100.0
-    player_y = 100.0
+    # Create a new player
+    player = Player(100, 100)
+
     # This list contain de directions pressed in order. It helps to get a fluent movement.
     pressed_directions =[]
 
@@ -40,17 +41,12 @@ def main():
 
 
         #2. UPDATE
-        keys = pygame.key.get_pressed()
-        if pressed_directions:
-            direction = pressed_directions[-1]
-            vector_direction = DIRECTIONS[direction]
-            player_x += vector_direction[0] * PLAYER_SPEED * dt
-            player_y += vector_direction[1] * PLAYER_SPEED * dt
+        player.update(dt, pressed_directions)
 
         #3. RENDERING
         screen.fill((30, 30, 30)) # Fill the entire screen with dark grey.
 
-        pygame.draw.rect(screen,"blue", (player_x, player_y, 40, 40))
+        player.draw(screen)
 
         # Update the display to show everything we just drew
         pygame.display.flip()
