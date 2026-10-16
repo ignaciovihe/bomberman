@@ -16,7 +16,7 @@ def main():
     board = Board()
 
     # Create a new player
-    player = Player(100, 100)
+    player = Player(45, 45)
 
     # This list contain de directions pressed in order. It helps to get a fluent movement.
     pressed_directions =[]
@@ -45,7 +45,7 @@ def main():
 
 
         #2. UPDATE
-        player.update(dt, pressed_directions)
+        player.update(dt, pressed_directions, board)
 
         #3. RENDERING
         screen.fill((30, 30, 30)) # Fill the entire screen with dark grey.

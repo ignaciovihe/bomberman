@@ -1,5 +1,5 @@
 from tile import TileType
-from constants import BOARD_COLS, BOARD_ROWS, TILE_COLORS, TILE_SIZE
+from constants import BOARD_COLS, BOARD_ROWS, TILE_COLORS, TILE_SIZE, PLAYER_SIZE
 import pygame
 
 class Board():
@@ -41,12 +41,22 @@ class Board():
                 print(column.value, end="")
             print()
 
+    def _is_walkable_row(self, y):
+        center = y + PLAYER_SIZE / 2
+        row = center // TILE_SIZE
+        return row % 2
+
+    def _is_walkable_col(self, x):
+        center = x + PLAYER_SIZE / 2
+        col = center // TILE_SIZE
+        return col % 2
+
     def _is_inside(self, row, col):
         if row < 0 or row >= BOARD_ROWS or col < 0 or col >= BOARD_COLS:
             return False
         return True
 
-    def is_walkable(self, row, col):
+    def _is_walkable(self, row, col):
         if self._is_inside(row, col):
             return self.board[row][col] == TileType.EMPTY
         return False
@@ -60,7 +70,7 @@ class Board():
         occupied_rows.append(int(((y + height) - 0.000001) // TILE_SIZE))
         for row in occupied_rows:
             for col in occupied_cols:
-                if  not self.is_walkable(row, col):
+                if  not self._is_walkable(row, col):
                     return False
         return True
 
