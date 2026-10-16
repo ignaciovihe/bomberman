@@ -41,12 +41,12 @@ class Board():
                 print(column.value, end="")
             print()
 
-    def _is_walkable_row(self, y):
+    def _is_horizontal_rail(self, y):
         center = y + PLAYER_SIZE / 2
         row = center // TILE_SIZE
         return row % 2
 
-    def _is_walkable_col(self, x):
+    def _is_vertical_rail(self, x):
         center = x + PLAYER_SIZE / 2
         col = center // TILE_SIZE
         return col % 2
