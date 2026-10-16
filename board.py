@@ -1,5 +1,5 @@
 from tile import TileType
-from constants import BOARD_COLS, BOARD_ROWS, TILE_COLORS, TILE_SIZE, PLAYER_SIZE
+from constants import BOARD_COLS, BOARD_ROWS, TILE_COLORS, TILE_SIZE, PLAYER_SIZE, SPAWN_CLEAR_TILES
 import pygame
 
 class Board():
@@ -30,8 +30,10 @@ class Board():
                     row.append(TileType.WALL)
                 elif not row_index % 2 and not column_index % 2:
                     row.append(TileType.WALL)
-                else:
+                elif (row_index,column_index) in SPAWN_CLEAR_TILES:
                     row.append(TileType.EMPTY)
+                else:
+                    row.append(TileType.DESTRUCTIBLE)
             board.append(row)
         return board
 

@@ -10,6 +10,14 @@ PLAYER_MOVE_MARGIN = 12
 
 BOARD_ROWS = 13
 BOARD_COLS = 15
+SPAWN_CLEAR_TILES = {
+    (1,1),
+    (1,2),
+    (2,1),
+    (11, 13),
+    (11, 12),
+    (10, 13),
+}
 
 TILE_COLORS = {
     TileType.EMPTY: "grey",
