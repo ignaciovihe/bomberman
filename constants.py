@@ -19,6 +19,8 @@ SPAWN_CLEAR_TILES = {
     (10, 13),
 }
 
+BOMB_RADIUS = 15
+
 TILE_COLORS = {
     TileType.EMPTY: "grey",
     TileType.WALL : "black",

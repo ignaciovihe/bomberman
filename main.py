@@ -1,6 +1,7 @@
 import pygame
 from player import Player
 from board import Board
+from bomb import Bomb
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_SPEED, DIRECTIONS
 
 def main():
@@ -16,9 +17,12 @@ def main():
     board = Board()
 
     # Create a new player
-    player = Player(45, 45)
+    player = Player(1, 45, 45)
 
-    # This list contain de directions pressed in order. It helps to get a fluent movement.
+    #This list contain the bombs set by the users
+    bombs: list[Bomb] = []
+
+    # This list contain the directions pressed in order. It helps to get a fluent movement.
     pressed_directions =[]
 
     # Variable to control the main game loop
@@ -39,6 +43,17 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if (event.key in DIRECTIONS) and (event.key not in pressed_directions):
                     pressed_directions.append(event.key)
+
+                if event.key == pygame.K_SPACE:
+                    if player.current_bombs < player.max_bombs:
+                        new_bomb = Bomb(player.x, player.y, player.id)
+                        occupied = any(bomb.tile == new_bomb.tile for bomb in bombs)
+                        if not occupied:
+                            player.current_bombs += 1
+                            bombs.append(new_bomb)
+
+                        
+                
             if event.type == pygame.KEYUP:
                 if (event.key in DIRECTIONS) and (event.key in pressed_directions):
                     pressed_directions.remove(event.key)
@@ -52,6 +67,8 @@ def main():
 
         board.draw(screen)
         player.draw(screen)
+        for bomb in bombs:
+            bomb.draw(screen)
 
         # Update the display to show everything we just drew
         pygame.display.flip()

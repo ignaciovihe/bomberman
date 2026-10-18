@@ -5,13 +5,13 @@ import pygame
 # Represents a player in the game
 class Player():
 
-    def __init__(self, x, y):
+    def __init__(self,id, x, y):
+        self.id = id
         self.x = float(x)
         self.y = float(y)
         self.current_direction = None
-
-    def draw(self, screen):
-        pygame.draw.rect(screen,"blue", (self.x, self.y, PLAYER_SIZE, PLAYER_SIZE))
+        self.current_bombs = 0
+        self.max_bombs = 1
 
     def _aligned_y(self):
         center = self.y + PLAYER_SIZE / 2
@@ -68,4 +68,7 @@ class Player():
                     can_move = self._move(dt, self.current_direction, vector_direction, board)
         else:
             self.current_direction = None
+
+    def draw(self, screen):
+        pygame.draw.rect(screen,"blue", (self.x, self.y, PLAYER_SIZE, PLAYER_SIZE))
 
