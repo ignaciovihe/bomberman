@@ -9,6 +9,8 @@ class Bomb():
         self.tile = self._calculate_tile()
         self.center = self._calculate_tile_center()
         self.id_player = id_player
+        self.timer = 3.0
+        self.owner_can_pass = True
 
     def _calculate_tile(self):
         player_center_x = self.x + PLAYER_SIZE / 2
@@ -22,6 +24,26 @@ class Bomb():
         bomb_x = (self.tile[0] * TILE_SIZE) + TILE_SIZE / 2
         bomb_y = (self.tile[1] * TILE_SIZE) + TILE_SIZE / 2
         return (bomb_x, bomb_y)
+
+    def overlaps_player(self, x, y):
+        bomb_rect = pygame.Rect(
+            self.tile[0] * TILE_SIZE,
+            self.tile[1] * TILE_SIZE,
+            TILE_SIZE,
+            TILE_SIZE
+        )
+
+        player_rect = pygame.Rect(
+            x,
+            y,
+            PLAYER_SIZE,
+            PLAYER_SIZE
+        )
+
+        return bomb_rect.colliderect(player_rect)
+
+    def update(self, dt):
+        self.timer -= dt
 
     def draw(self, screen):
         pygame.draw.circle(screen, "black", self.center, BOMB_RADIUS)

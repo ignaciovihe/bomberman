@@ -19,6 +19,10 @@ def main():
     # Create a new player
     player = Player(1, 45, 45)
 
+    players = {
+        1: player
+    }
+
     #This list contain the bombs set by the users
     bombs: list[Bomb] = []
 
@@ -60,7 +64,20 @@ def main():
 
 
         #2. UPDATE
-        player.update(dt, pressed_directions, board)
+        player.update(dt, pressed_directions, board, bombs)
+
+        for bomb in bombs[:]:
+            bomb.update(dt)
+
+            if bomb.timer <= 0:
+                bombs.remove(bomb)
+                players[bomb.id_player].current_bombs -=1
+                continue
+
+            owner = players[bomb.id_player]
+
+            if bomb.owner_can_pass and not bomb.overlaps_player(owner.x, owner.y):
+                bomb.owner_can_pass = False
 
         #3. RENDERING
         screen.fill((30, 30, 30)) # Fill the entire screen with dark grey.
