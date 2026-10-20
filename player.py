@@ -12,7 +12,7 @@ class Player():
         self.y = float(y)
         self.current_direction = None
         self.current_bombs = 0
-        self.max_bombs = 1
+        self.max_bombs = 5
 
     def _aligned_y(self):
         center = self.y + PLAYER_SIZE / 2

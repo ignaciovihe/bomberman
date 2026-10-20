@@ -2,6 +2,7 @@ import pygame
 from player import Player
 from board import Board
 from bomb import Bomb
+from explosion import Explosion
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_SPEED, DIRECTIONS
 
 def main():
@@ -25,6 +26,9 @@ def main():
 
     #This list contain the bombs set by the users
     bombs: list[Bomb] = []
+
+    #This list contain the active explosions.
+    explosions: list[Explosion] = []
 
     # This list contain the directions pressed in order. It helps to get a fluent movement.
     pressed_directions =[]
@@ -71,15 +75,23 @@ def main():
 
             if bomb.timer <= 0:
                 affected_tiles = bomb.check_explosions(board)
-                print(affected_tiles)
                 bombs.remove(bomb)
                 players[bomb.id_player].current_bombs -=1
+                explosion = Explosion(affected_tiles)
+                explosions.append(explosion)
+                board.destroy_tiles(affected_tiles)
                 continue
 
             owner = players[bomb.id_player]
 
             if bomb.owner_can_pass and not bomb.overlaps_player(owner.x, owner.y):
                 bomb.owner_can_pass = False
+
+        for explosion in explosions[:]:
+            explosion.update(dt)
+
+            if explosion.timer <= 0:
+                explosions.remove(explosion)
 
         #3. RENDERING
         screen.fill((30, 30, 30)) # Fill the entire screen with dark grey.
@@ -88,6 +100,8 @@ def main():
         player.draw(screen)
         for bomb in bombs:
             bomb.draw(screen)
+        for explosion in explosions:
+            explosion.draw(screen)
 
         # Update the display to show everything we just drew
         pygame.display.flip()

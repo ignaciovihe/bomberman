@@ -76,3 +76,8 @@ class Board():
                     return False
         return True
 
+    def destroy_tiles(self, affected_tiles):
+        for tile in affected_tiles:
+            if self.board[tile[1]][tile[0]] == TileType.DESTRUCTIBLE:
+                self.board[tile[1]][tile[0]] = TileType.EMPTY
+

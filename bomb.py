@@ -13,7 +13,7 @@ class Bomb():
         self.id_player = id_player
         self.timer = 3.0
         self.owner_can_pass = True
-        self.power = 1
+        self.power = 5
 
     def _calculate_tile(self):
         player_center_x = self.x + PLAYER_SIZE / 2
