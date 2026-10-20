@@ -1,4 +1,6 @@
-from constants import PLAYER_SIZE, BOMB_RADIUS,TILE_SIZE
+from constants import PLAYER_SIZE, BOMB_RADIUS,TILE_SIZE, EXPLOSION_DIRECTIONS
+from board import Board
+from tile import TileType
 import pygame
 
 class Bomb():
@@ -11,6 +13,7 @@ class Bomb():
         self.id_player = id_player
         self.timer = 3.0
         self.owner_can_pass = True
+        self.power = 1
 
     def _calculate_tile(self):
         player_center_x = self.x + PLAYER_SIZE / 2
@@ -41,6 +44,24 @@ class Bomb():
         )
 
         return bomb_rect.colliderect(player_rect)
+
+    def check_explosions(self, board: Board):
+        affected_tiles = [self.tile]
+        for direction in EXPLOSION_DIRECTIONS:
+            dx, dy = direction
+            for distance in range(1, self.power +1):
+                tile_affected_x = self.tile[0] + dx * distance
+                tile_affected_y = self.tile[1] + dy * distance
+                if not board._is_inside(tile_affected_y, tile_affected_x):
+                    break
+                if board.board[tile_affected_y][tile_affected_x] == TileType.WALL:
+                    break
+                if board.board[tile_affected_y][tile_affected_x] == TileType.DESTRUCTIBLE:
+                    affected_tiles.append((tile_affected_x,tile_affected_y))
+                    break
+                if board.board[tile_affected_y][tile_affected_x] == TileType.EMPTY:
+                    affected_tiles.append((tile_affected_x,tile_affected_y))
+        return affected_tiles
 
     def update(self, dt):
         self.timer -= dt

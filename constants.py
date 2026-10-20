@@ -35,3 +35,10 @@ DIRECTIONS = {
     pygame.K_LEFT: (-1, 0),
     pygame.K_RIGHT: (1, 0)
 }
+
+EXPLOSION_DIRECTIONS = [
+    (0, -1),
+    (0, 1),
+    (-1, 0),
+    (1, 0)
+]

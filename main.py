@@ -70,6 +70,8 @@ def main():
             bomb.update(dt)
 
             if bomb.timer <= 0:
+                affected_tiles = bomb.check_explosions(board)
+                print(affected_tiles)
                 bombs.remove(bomb)
                 players[bomb.id_player].current_bombs -=1
                 continue
