@@ -3,7 +3,9 @@ from player import Player
 from board import Board
 from bomb import Bomb
 from explosion import Explosion
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_SPEED, DIRECTIONS
+from game_state import GameState
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT, DIRECTIONS
+from ui import screen_game_over
 
 def main():
     # Initialize Pygame (loads internal modules and prepares everything)
@@ -36,6 +38,9 @@ def main():
     # Variable to control the main game loop
     running = True
 
+    # Variable to control the state of the game
+    state = GameState.PLAYING
+
     # Main game loop (each iteration = 1 frame)
     while running:
 
@@ -60,48 +65,54 @@ def main():
                             player.current_bombs += 1
                             bombs.append(new_bomb)
 
-                        
-                
             if event.type == pygame.KEYUP:
                 if (event.key in DIRECTIONS) and (event.key in pressed_directions):
                     pressed_directions.remove(event.key)
 
 
         #2. UPDATE
-        player.update(dt, pressed_directions, board, bombs)
+        if state == GameState.PLAYING:
+            player.update(dt, pressed_directions, board, bombs)
 
-        for bomb in bombs[:]:
-            bomb.update(dt)
+            for bomb in bombs[:]:
+                bomb.update(dt)
 
-            if bomb.timer <= 0:
-                affected_tiles = bomb.check_explosions(board)
-                bombs.remove(bomb)
-                players[bomb.id_player].current_bombs -=1
-                explosion = Explosion(affected_tiles)
-                explosions.append(explosion)
-                board.destroy_tiles(affected_tiles)
-                continue
+                if bomb.timer <= 0:
+                    affected_tiles = bomb.check_explosions(board)
+                    bombs.remove(bomb)
+                    players[bomb.id_player].current_bombs -=1
+                    explosion = Explosion(affected_tiles)
+                    explosions.append(explosion)
+                    board.destroy_tiles(affected_tiles)
+                    continue
 
-            owner = players[bomb.id_player]
+                owner = players[bomb.id_player]
 
-            if bomb.owner_can_pass and not bomb.overlaps_player(owner.x, owner.y):
-                bomb.owner_can_pass = False
+                if bomb.owner_can_pass and not bomb.overlaps_player(owner.x, owner.y):
+                    bomb.owner_can_pass = False
 
-        for explosion in explosions[:]:
-            explosion.update(dt)
+            for explosion in explosions[:]:
+                if explosion.hits_player(player):
+                    player.alive = False
+                explosion.update(dt)
 
-            if explosion.timer <= 0:
-                explosions.remove(explosion)
+                if explosion.timer <= 0:
+                    explosions.remove(explosion)
+            if not player.alive:
+                state= GameState.GAME_OVER
 
         #3. RENDERING
         screen.fill((30, 30, 30)) # Fill the entire screen with dark grey.
 
         board.draw(screen)
-        player.draw(screen)
         for bomb in bombs:
             bomb.draw(screen)
         for explosion in explosions:
             explosion.draw(screen)
+        player.draw(screen)
+
+        if state == GameState.GAME_OVER:
+            screen_game_over(screen)
 
         # Update the display to show everything we just drew
         pygame.display.flip()

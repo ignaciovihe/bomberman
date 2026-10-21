@@ -13,6 +13,7 @@ class Player():
         self.current_direction = None
         self.current_bombs = 0
         self.max_bombs = 5
+        self.alive = True
 
     def _aligned_y(self):
         center = self.y + PLAYER_SIZE / 2
@@ -80,5 +81,8 @@ class Player():
             self.current_direction = None
 
     def draw(self, screen):
-        pygame.draw.rect(screen,"blue", (self.x, self.y, PLAYER_SIZE, PLAYER_SIZE))
+        if self.alive:
+            pygame.draw.rect(screen,"blue", (self.x, self.y, PLAYER_SIZE, PLAYER_SIZE))
+        else:
+            pygame.draw.rect(screen,"red", (self.x, self.y, PLAYER_SIZE, PLAYER_SIZE))
 
