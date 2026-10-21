@@ -55,6 +55,12 @@ def main():
     # Variable to control the state of the game
     state = GameState.PLAYING
 
+    # Variable to set the winner
+    winner = None
+
+    # Variable that contains the time of the resolving state.
+    resolving_timer = 0.3
+
     # Main game loop (each iteration = 1 frame)
     while running:
 
@@ -93,6 +99,7 @@ def main():
             for id_player, current_player in players.items():
                 current_player.update(dt, pressed_directions[id_player], board, bombs)
 
+        if state == GameState.PLAYING or state == GameState.RESOLVING:
             for bomb in bombs[:]:
                 bomb.update(dt)
 
@@ -118,9 +125,21 @@ def main():
 
                 if explosion.timer <= 0:
                     explosions.remove(explosion)
-            for current_player in players.values():        
-                if not current_player.alive:
-                    state= GameState.GAME_OVER
+
+        if state == GameState.PLAYING:    
+            if not players[1].alive or not players[2].alive:
+                state = GameState.RESOLVING
+
+        elif state == GameState.RESOLVING:
+            resolving_timer -= dt
+            if resolving_timer <= 0:
+                if not players[1].alive and not players[2].alive:
+                    winner = 0
+                elif not players[1].alive:
+                    winner = 2
+                elif not players[2].alive:
+                    winner = 1
+                state = GameState.GAME_OVER
 
         #3. RENDERING
         screen.fill((30, 30, 30)) # Fill the entire screen with dark grey.
@@ -134,7 +153,7 @@ def main():
             current_player.draw(screen, PLAYER_COLOR[id_player])
 
         if state == GameState.GAME_OVER:
-            screen_game_over(screen)
+            screen_game_over(screen, winner)
 
         # Update the display to show everything we just drew
         pygame.display.flip()
