@@ -4,8 +4,17 @@ from board import Board
 from bomb import Bomb
 from explosion import Explosion
 from game_state import GameState
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT, DIRECTIONS
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT, DIRECTIONS_P1, DIRECTIONS_P2, PLAYER_COLOR
 from ui import screen_game_over
+
+def place_bomb(player: Player, bombs: list[Bomb]):
+    if player.current_bombs < player.max_bombs:
+        new_bomb = Bomb(player.x, player.y, player.id)
+        occupied = any(bomb.tile == new_bomb.tile for bomb in bombs)
+        if not occupied:
+            player.current_bombs += 1
+            bombs.append(new_bomb)
+
 
 def main():
     # Initialize Pygame (loads internal modules and prepares everything)
@@ -19,11 +28,19 @@ def main():
     #Create a new board
     board = Board()
 
-    # Create a new player
+    # Create the new players
     player = Player(1, 45, 45)
+    player_2 = Player(2, 525, 445)
 
     players = {
-        1: player
+        1: player,
+        2: player_2
+    }
+
+    # This list contain the directions pressed in order. It helps to get a fluent movement.
+    pressed_directions ={
+        1: [],
+        2: []
     }
 
     #This list contain the bombs set by the users
@@ -31,9 +48,6 @@ def main():
 
     #This list contain the active explosions.
     explosions: list[Explosion] = []
-
-    # This list contain the directions pressed in order. It helps to get a fluent movement.
-    pressed_directions =[]
 
     # Variable to control the main game loop
     running = True
@@ -52,27 +66,32 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            
-            if event.type == pygame.KEYDOWN:
-                if (event.key in DIRECTIONS) and (event.key not in pressed_directions):
-                    pressed_directions.append(event.key)
+            if state == GameState.PLAYING:
+                if event.type == pygame.KEYDOWN:
+                    if (event.key in DIRECTIONS_P1) and (DIRECTIONS_P1[event.key] not in pressed_directions[1]):
+                        pressed_directions[1].append(DIRECTIONS_P1[event.key])
 
-                if event.key == pygame.K_SPACE:
-                    if player.current_bombs < player.max_bombs:
-                        new_bomb = Bomb(player.x, player.y, player.id)
-                        occupied = any(bomb.tile == new_bomb.tile for bomb in bombs)
-                        if not occupied:
-                            player.current_bombs += 1
-                            bombs.append(new_bomb)
+                    if (event.key in DIRECTIONS_P2) and (DIRECTIONS_P2[event.key] not in pressed_directions[2]):
+                        pressed_directions[2].append(DIRECTIONS_P2[event.key])
+
+                    if event.key == pygame.K_SPACE:
+                        place_bomb(players[1], bombs)
+
+                    if event.key == pygame.K_q:
+                        place_bomb(players[2], bombs)
 
             if event.type == pygame.KEYUP:
-                if (event.key in DIRECTIONS) and (event.key in pressed_directions):
-                    pressed_directions.remove(event.key)
+                if (event.key in DIRECTIONS_P1) and (DIRECTIONS_P1[event.key] in pressed_directions[1]):
+                    pressed_directions[1].remove(DIRECTIONS_P1[event.key])
+
+                if (event.key in DIRECTIONS_P2) and (DIRECTIONS_P2[event.key] in pressed_directions[2]):
+                    pressed_directions[2].remove(DIRECTIONS_P2[event.key])
 
 
         #2. UPDATE
         if state == GameState.PLAYING:
-            player.update(dt, pressed_directions, board, bombs)
+            for id_player, current_player in players.items():
+                current_player.update(dt, pressed_directions[id_player], board, bombs)
 
             for bomb in bombs[:]:
                 bomb.update(dt)
@@ -92,14 +111,16 @@ def main():
                     bomb.owner_can_pass = False
 
             for explosion in explosions[:]:
-                if explosion.hits_player(player):
-                    player.alive = False
+                for current_player in players.values():
+                    if explosion.hits_player(current_player):
+                        current_player.alive = False
                 explosion.update(dt)
 
                 if explosion.timer <= 0:
                     explosions.remove(explosion)
-            if not player.alive:
-                state= GameState.GAME_OVER
+            for current_player in players.values():        
+                if not current_player.alive:
+                    state= GameState.GAME_OVER
 
         #3. RENDERING
         screen.fill((30, 30, 30)) # Fill the entire screen with dark grey.
@@ -109,7 +130,8 @@ def main():
             bomb.draw(screen)
         for explosion in explosions:
             explosion.draw(screen)
-        player.draw(screen)
+        for id_player, current_player in players.items():
+            current_player.draw(screen, PLAYER_COLOR[id_player])
 
         if state == GameState.GAME_OVER:
             screen_game_over(screen)

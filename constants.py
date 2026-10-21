@@ -7,6 +7,10 @@ SCREEN_HEIGHT = 600
 PLAYER_SPEED = 200
 PLAYER_SIZE = 30
 PLAYER_MOVE_MARGIN = 12
+PLAYER_COLOR = {
+    1: "blue",
+    2: "green"
+}
 
 BOARD_ROWS = 13
 BOARD_COLS = 15
@@ -31,12 +35,27 @@ TILE_COLORS = {
 
 TILE_SIZE = 40
 
-DIRECTIONS = {
-    pygame.K_UP: (0, -1),
-    pygame.K_DOWN: (0, 1),
-    pygame.K_LEFT: (-1, 0),
-    pygame.K_RIGHT: (1, 0)
+DIRECTIONS_P1 = {
+    pygame.K_UP: "UP",
+    pygame.K_DOWN: "DOWN",
+    pygame.K_LEFT: "LEFT",
+    pygame.K_RIGHT: "RIGHT"
 }
+
+DIRECTIONS_P2 = {
+    pygame.K_w: "UP",
+    pygame.K_s: "DOWN",
+    pygame.K_a: "LEFT",
+    pygame.K_d: "RIGHT"
+}
+
+DIRECTIONS = {
+    "UP": (0, -1),
+    "DOWN": (0, 1),
+    "LEFT": (-1, 0),
+    "RIGHT": (1, 0) 
+}
+
 
 EXPLOSION_DIRECTIONS = [
     (0, -1),

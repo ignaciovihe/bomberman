@@ -12,7 +12,7 @@ class Player():
         self.y = float(y)
         self.current_direction = None
         self.current_bombs = 0
-        self.max_bombs = 5
+        self.max_bombs = 1
         self.alive = True
 
     def _aligned_y(self):
@@ -40,7 +40,7 @@ class Player():
         return True
 
     def _move(self, dt, direction, vector_d, board: Board, bombs: list[Bomb]):
-        if (direction == pygame.K_RIGHT or direction == pygame.K_LEFT):
+        if (direction == "RIGHT" or direction == "LEFT"):
             aligned_y = self._aligned_y()
             if self._is_inside_margin(aligned_y, self.y) and board._is_horizontal_rail(self.y):
                 desired_x = self.x + vector_d[0] * PLAYER_SPEED * dt
@@ -50,7 +50,7 @@ class Player():
                         self.x = desired_x
                         self.y = desired_y
                         return True
-        if (direction == pygame.K_UP or direction == pygame.K_DOWN):
+        if (direction == "UP" or direction == "DOWN"):
             aligned_x = self._aligned_x()
             if self._is_inside_margin(aligned_x, self.x) and board._is_vertical_rail(self.x):
                 desired_x = aligned_x
@@ -80,9 +80,9 @@ class Player():
         else:
             self.current_direction = None
 
-    def draw(self, screen):
+    def draw(self, screen, color):
         if self.alive:
-            pygame.draw.rect(screen,"blue", (self.x, self.y, PLAYER_SIZE, PLAYER_SIZE))
+            pygame.draw.rect(screen,color, (self.x, self.y, PLAYER_SIZE, PLAYER_SIZE))
         else:
             pygame.draw.rect(screen,"red", (self.x, self.y, PLAYER_SIZE, PLAYER_SIZE))
 
