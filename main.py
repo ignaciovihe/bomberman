@@ -77,7 +77,7 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if state == GameState.PLAYING:
+            if state in (GameState.PLAYING, GameState.RESOLVING):
                 if event.type == pygame.KEYDOWN:
                     if (event.key in DIRECTIONS_P1) and (DIRECTIONS_P1[event.key] not in pressed_directions[1]):
                         pressed_directions[1].append(DIRECTIONS_P1[event.key])
@@ -85,11 +85,12 @@ def main():
                     if (event.key in DIRECTIONS_P2) and (DIRECTIONS_P2[event.key] not in pressed_directions[2]):
                         pressed_directions[2].append(DIRECTIONS_P2[event.key])
 
-                    if event.key == pygame.K_SPACE:
-                        place_bomb(players[1], bombs)
+                    if state == GameState.PLAYING:
+                        if event.key == pygame.K_SPACE:
+                            place_bomb(players[1], bombs)
 
-                    if event.key == pygame.K_q:
-                        place_bomb(players[2], bombs)
+                        if event.key == pygame.K_q:
+                            place_bomb(players[2], bombs)
 
             if event.type == pygame.KEYUP:
                 if (event.key in DIRECTIONS_P1) and (DIRECTIONS_P1[event.key] in pressed_directions[1]):
@@ -100,11 +101,11 @@ def main():
 
 
         #2. UPDATE
-        if state == GameState.PLAYING:
+        if state in (GameState.PLAYING, GameState.RESOLVING):
             for id_player, current_player in players.items():
-                current_player.update(dt, pressed_directions[id_player], board, bombs)
+                if current_player.alive:
+                    current_player.update(dt, pressed_directions[id_player], board, bombs)
 
-        if state == GameState.PLAYING or state == GameState.RESOLVING:
             for bomb in bombs[:]:
                 bomb.update(dt)
 
@@ -112,7 +113,7 @@ def main():
                     affected_tiles = bomb.check_explosions(board)
                     bombs.remove(bomb)
                     players[bomb.id_player].current_bombs -=1
-                    explosion = Explosion(affected_tiles)
+                    explosion = Explosion(bomb.tile ,affected_tiles)
                     explosions.append(explosion)
                     board.destroy_tiles(affected_tiles)
                     trigger_chain_reactions(affected_tiles, bombs)
