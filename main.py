@@ -15,6 +15,11 @@ def place_bomb(player: Player, bombs: list[Bomb]):
             player.current_bombs += 1
             bombs.append(new_bomb)
 
+def trigger_chain_reactions(affected_tiles, bombs: list[Bomb]):
+    for bomb in bombs:
+        if bomb.tile in affected_tiles:
+            bomb.timer = 0
+
 
 def main():
     # Initialize Pygame (loads internal modules and prepares everything)
@@ -110,6 +115,7 @@ def main():
                     explosion = Explosion(affected_tiles)
                     explosions.append(explosion)
                     board.destroy_tiles(affected_tiles)
+                    trigger_chain_reactions(affected_tiles, bombs)
                     continue
 
                 owner = players[bomb.id_player]
