@@ -28,9 +28,12 @@ class Explosion():
         return max_distance
 
     def _update_active_tiles(self, max_distance):
+        new_active_tiles = []
         for tile in self.affected_tiles:
             if self._calculate_distance(tile) <= max_distance and tile not in self.active_tiles:
-                self.active_tiles.append(tile)    
+                self.active_tiles.append(tile)
+                new_active_tiles.append(tile)
+        return new_active_tiles    
             
 
 
@@ -60,7 +63,8 @@ class Explosion():
         self.timer -= dt
         elapsed_time = self.explosion_duration - self.timer
         max_distance = int((elapsed_time + 1e-9) / EXPANSION_INTERVAL)
-        self._update_active_tiles(max_distance)
+        new_active_tiles = self._update_active_tiles(max_distance)
+        return new_active_tiles
 
     def draw(self, screen):
         for tile in self.active_tiles:

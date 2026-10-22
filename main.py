@@ -115,8 +115,6 @@ def main():
                     players[bomb.id_player].current_bombs -=1
                     explosion = Explosion(bomb.tile ,affected_tiles)
                     explosions.append(explosion)
-                    board.destroy_tiles(affected_tiles)
-                    trigger_chain_reactions(affected_tiles, bombs)
                     continue
 
                 owner = players[bomb.id_player]
@@ -125,10 +123,13 @@ def main():
                     bomb.owner_can_pass = False
 
             for explosion in explosions[:]:
+                current_active_tiles = explosion.update(dt)
+                board.destroy_tiles(current_active_tiles)
+                trigger_chain_reactions(current_active_tiles, bombs)
                 for current_player in players.values():
                     if explosion.hits_player(current_player):
                         current_player.alive = False
-                explosion.update(dt)
+
 
                 if explosion.timer <= 0:
                     explosions.remove(explosion)
