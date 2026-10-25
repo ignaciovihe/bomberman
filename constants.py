@@ -37,11 +37,17 @@ POWERUP_IMAGES = {
 }
 BOMB_IMAGE = "assets/images/bombs/bomb.png"
 
+EXPLOSION_IMAGES = {
+    "center": "assets/images/explosions/center.png",
+    "horizontal": "assets/images/explosions/horizontal.png",
+    "vertical": "assets/images/explosions/vertical.png",
+}
+
 BOMB_UP_COUNT = 5
 FIRE_UP_COUNT = 5
 SPEED_UP_COUNT = 4
 
-SPEED_UP_INCREMENT = 50
+SPEED_UP_INCREMENT = 40
 INITIAL_PLAYER_SPPED = 200
 MAX_PLAYER_SPEED = 400
 

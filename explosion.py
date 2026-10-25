@@ -66,7 +66,13 @@ class Explosion():
         new_active_tiles = self._update_active_tiles(max_distance)
         return new_active_tiles
 
-    def draw(self, screen):
+    def draw(self, screen, surfaces):
         for tile in self.active_tiles:
             x, y = self._initial_position(tile)
-            pygame.draw.rect(screen,"orange", (x, y, EXPLOSION_SIZE, EXPLOSION_SIZE))
+            #pygame.draw.rect(screen,"orange", (x, y, EXPLOSION_SIZE, EXPLOSION_SIZE))
+            if tile == self.origin_tile:
+                screen.blit(surfaces["center"], (x, y))
+            if tile[0] != self.origin_tile[0]:
+                screen.blit(surfaces["horizontal"], (x, y))
+            else:
+                screen.blit(surfaces["vertical"], (x, y))
