@@ -131,6 +131,7 @@ def main():
 
             for explosion in explosions[:]:
                 current_active_tiles = explosion.update(dt)
+                board.destroy_powerups(current_active_tiles)
                 board.destroy_tiles(current_active_tiles)
                 trigger_chain_reactions(current_active_tiles, bombs)
                 for current_player in players.values():

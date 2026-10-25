@@ -150,5 +150,13 @@ class Board():
                 return self.power_ups.pop(tile)
         return None
 
+    def destroy_powerups(self, tiles) -> None:
+        """Destroy exposed power-ups in newly affected explosion tiles."""
+        for tile in tiles:
+            if tile in self.power_ups:
+                if self.board[tile[1]][tile[0]] == TileType.EMPTY:
+                    del self.power_ups[tile]
+
+
 
 
