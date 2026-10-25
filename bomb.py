@@ -5,7 +5,7 @@ import pygame
 
 class Bomb():
 
-    def __init__(self, x, y, id_player):
+    def __init__(self, x, y, id_player, power):
         self.x = x
         self.y = y
         self.tile = self._calculate_tile()
@@ -13,7 +13,7 @@ class Bomb():
         self.id_player = id_player
         self.timer = 3.0
         self.owner_can_pass = True
-        self.power = 1
+        self.power = power
 
     def _calculate_tile(self):
         player_center_x = self.x + PLAYER_SIZE / 2

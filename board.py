@@ -1,11 +1,33 @@
-from tile import TileType
-from constants import BOARD_COLS, BOARD_ROWS, TILE_COLORS, TILE_SIZE, PLAYER_SIZE, SPAWN_CLEAR_TILES
+import random
+from typing import TYPE_CHECKING # Used for type hints without causing circular imports
+
 import pygame
+
+from tile import TileType
+from power_up import PowerUp
+from constants import (
+    BOARD_COLS, 
+    BOARD_ROWS, 
+    TILE_COLORS, 
+    TILE_SIZE, 
+    PLAYER_SIZE, 
+    SPAWN_CLEAR_TILES, 
+    BOMB_UP_COUNT, 
+    FIRE_UP_COUNT, 
+    SPEED_UP_COUNT
+) 
+
+# Import Explosion only for type annotations.
+# TYPE_CHECKING is True for type checkers (like Pylance),
+# but False at runtime, preventing circular imports.
+if TYPE_CHECKING:
+    from explosion import Explosion
 
 class Board():
 
     def __init__(self):
         self.board = self._generate_board()
+        self.power_ups = self._generate_powerups()
 
     def draw(self, screen):
         for row_index, row in enumerate(self.board):
@@ -36,6 +58,31 @@ class Board():
                     row.append(TileType.DESTRUCTIBLE)
             board.append(row)
         return board
+
+    def _get_destructible_walls(self):
+        return [
+            (column, row)
+            for row, tiles in enumerate(self.board)
+            for column, tile in enumerate(tiles) 
+            if tile == TileType.DESTRUCTIBLE]
+
+    def _generate_powerups(self):
+        destructible_walls = self._get_destructible_walls()
+        power_ups_quantity = BOMB_UP_COUNT + FIRE_UP_COUNT + SPEED_UP_COUNT
+        chosen_tiles = random.sample(destructible_walls, power_ups_quantity)
+        power_ups = {}
+        for tile in chosen_tiles[0:BOMB_UP_COUNT]:
+            power_ups[tile] = PowerUp.BOMB_UP
+        for tile in chosen_tiles[BOMB_UP_COUNT : BOMB_UP_COUNT + FIRE_UP_COUNT]:
+            power_ups[tile] = PowerUp.FIRE_UP
+        for tile in chosen_tiles[BOMB_UP_COUNT + FIRE_UP_COUNT :]:
+            power_ups[tile] = PowerUp.SPEED_UP
+        return power_ups
+
+
+        return power_ups
+
+
 
     def print_board(self):
         for row in self.board:
@@ -80,4 +127,28 @@ class Board():
         for tile in affected_tiles:
             if self.board[tile[1]][tile[0]] == TileType.DESTRUCTIBLE:
                 self.board[tile[1]][tile[0]] = TileType.EMPTY
+
+    def _has_fire(self, tile, explosions: list["Explosion"]):
+        return any(tile in explosion.active_tiles for explosion in explosions)           
+
+    def draw_powerups(self, screen, explosions: list["Explosion"]):
+        for tile, power_up in self.power_ups.items():
+            if self.board[tile[1]][tile[0]] == TileType.EMPTY and not self._has_fire(tile, explosions):
+                pygame.draw.rect(
+                    screen, 
+                    "purple",
+                    (
+                        tile[0] * TILE_SIZE,
+                        tile[1] * TILE_SIZE, 
+                        TILE_SIZE, 
+                        TILE_SIZE)
+                    )
+
+    def collect_powerup(self, tile, explosions):
+        if tile in self.power_ups:
+            if self.board[tile[1]][tile[0]] == TileType.EMPTY and not self._has_fire(tile, explosions):
+                return self.power_ups.pop(tile)
+        return None
+
+
 

@@ -6,10 +6,12 @@ from explosion import Explosion
 from game_state import GameState
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT, DIRECTIONS_P1, DIRECTIONS_P2, PLAYER_COLOR
 from ui import screen_game_over
+from pprint import pprint
+from tile import TileType
 
 def place_bomb(player: Player, bombs: list[Bomb]):
     if player.current_bombs < player.max_bombs:
-        new_bomb = Bomb(player.x, player.y, player.id)
+        new_bomb = Bomb(player.x, player.y, player.id, player.fire_power)
         occupied = any(bomb.tile == new_bomb.tile for bomb in bombs)
         if not occupied:
             player.current_bombs += 1
@@ -32,6 +34,7 @@ def main():
 
     #Create a new board
     board = Board()
+    pprint(board.power_ups)
 
     # Create the new players
     player = Player(1, 45, 45)
@@ -105,7 +108,11 @@ def main():
             for id_player, current_player in players.items():
                 if current_player.alive:
                     current_player.update(dt, pressed_directions[id_player], board, bombs)
-
+                    player_tile = current_player.get_tile()
+                    power_up = board.collect_powerup(player_tile, explosions)
+                    if power_up:
+                        current_player.apply_powerup(power_up)
+                    
             for bomb in bombs[:]:
                 bomb.update(dt)
 
@@ -153,6 +160,7 @@ def main():
         screen.fill((30, 30, 30)) # Fill the entire screen with dark grey.
 
         board.draw(screen)
+        board.draw_powerups(screen, explosions)
         for bomb in bombs:
             bomb.draw(screen)
         for explosion in explosions:
