@@ -8,6 +8,7 @@ from constants import SCREEN_WIDTH, SCREEN_HEIGHT, DIRECTIONS_P1, DIRECTIONS_P2,
 from ui import screen_game_over
 from pprint import pprint
 from tile import TileType
+from assets import load_powerup_images
 
 def place_bomb(player: Player, bombs: list[Bomb]):
     if player.current_bombs < player.max_bombs:
@@ -28,6 +29,9 @@ def main():
     pygame.init()
 
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    
+    # Load power-up images
+    powerup_surfaces = load_powerup_images()
 
     # Create a Clock object to track time and control FPS
     clock = pygame.time.Clock()
@@ -161,7 +165,7 @@ def main():
         screen.fill((30, 30, 30)) # Fill the entire screen with dark grey.
 
         board.draw(screen)
-        board.draw_powerups(screen, explosions)
+        board.draw_powerups(screen, explosions, powerup_surfaces)
         for bomb in bombs:
             bomb.draw(screen)
         for explosion in explosions:

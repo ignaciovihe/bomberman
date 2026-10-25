@@ -131,18 +131,10 @@ class Board():
     def _has_fire(self, tile, explosions: list["Explosion"]):
         return any(tile in explosion.active_tiles for explosion in explosions)           
 
-    def draw_powerups(self, screen, explosions: list["Explosion"]):
+    def draw_powerups(self, screen, explosions: list["Explosion"], surfaces: dict[PowerUp, pygame.Surface]):
         for tile, power_up in self.power_ups.items():
             if self.board[tile[1]][tile[0]] == TileType.EMPTY and not self._has_fire(tile, explosions):
-                pygame.draw.rect(
-                    screen, 
-                    "purple",
-                    (
-                        tile[0] * TILE_SIZE,
-                        tile[1] * TILE_SIZE, 
-                        TILE_SIZE, 
-                        TILE_SIZE)
-                    )
+                screen.blit(surfaces[power_up], (tile[0] * TILE_SIZE, tile[1] * TILE_SIZE))
 
     def collect_powerup(self, tile, explosions):
         if tile in self.power_ups:

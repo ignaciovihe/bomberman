@@ -1,5 +1,6 @@
 import pygame
 from tile import TileType
+from power_up import PowerUp
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -28,6 +29,12 @@ BOMB_RADIUS = 15
 EXPLOSION_SIZE = 40
 EXPANSION_INTERVAL = 0.05
 EXPLOSION_HOLD_TIME = 0.3
+
+POWERUP_IMAGES = {
+    PowerUp.BOMB_UP: "assets/images/power_ups/bomb_up.png",
+    PowerUp.FIRE_UP: "assets/images/power_ups/fire_up.png",
+    PowerUp.SPEED_UP: "assets/images/power_ups/speed_up.png",
+}
 
 BOMB_UP_COUNT = 5
 FIRE_UP_COUNT = 5
