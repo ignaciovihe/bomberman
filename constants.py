@@ -35,6 +35,7 @@ POWERUP_IMAGES = {
     PowerUp.FIRE_UP: "assets/images/power_ups/fire_up.png",
     PowerUp.SPEED_UP: "assets/images/power_ups/speed_up.png",
 }
+BOMB_IMAGE = "assets/images/bombs/bomb.png"
 
 BOMB_UP_COUNT = 5
 FIRE_UP_COUNT = 5

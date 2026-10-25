@@ -66,6 +66,6 @@ class Bomb():
     def update(self, dt):
         self.timer -= dt
 
-    def draw(self, screen):
-        pygame.draw.circle(screen, "black", self.center, BOMB_RADIUS)
+    def draw(self, screen, surface):
+        screen.blit(surface, (self.tile[0] * TILE_SIZE, self.tile[1] * TILE_SIZE))
         
