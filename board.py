@@ -29,19 +29,10 @@ class Board():
         self.board = self._generate_board()
         self.power_ups = self._generate_powerups()
 
-    def draw(self, screen):
-        for row_index, row in enumerate(self.board):
-            for column_index, tile in enumerate(row):
-                pygame.draw.rect(
-                    screen, 
-                    TILE_COLORS[tile],
-                    (
-                        column_index * TILE_SIZE,
-                        row_index * TILE_SIZE, 
-                        TILE_SIZE, 
-                        TILE_SIZE)
-                    )
-
+    def draw(self, screen, surfaces):
+        for row, tiles in enumerate(self.board):
+            for column, tile in enumerate(tiles):
+                    screen.blit(surfaces[tile], (column * TILE_SIZE, row * TILE_SIZE))
 
     def _generate_board(self):
         board = []

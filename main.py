@@ -8,7 +8,7 @@ from constants import SCREEN_WIDTH, SCREEN_HEIGHT, DIRECTIONS_P1, DIRECTIONS_P2,
 from ui import screen_game_over
 from pprint import pprint
 from tile import TileType
-from assets import load_powerup_images, load_bomb_image, load_explosion_images
+from assets import load_powerup_images, load_bomb_image, load_explosion_images, load_tiles_images, load_playe1_images, load_playe2_images
 
 def place_bomb(player: Player, bombs: list[Bomb]):
     if player.current_bombs < player.max_bombs:
@@ -34,6 +34,9 @@ def main():
     powerup_surfaces = load_powerup_images()
     bomb_surface = load_bomb_image()
     explosion_surfaces = load_explosion_images()
+    tile_surfaces = load_tiles_images()
+    player1_surfaces = load_playe1_images()
+    player2_surfaces = load_playe2_images()
 
     # Create a Clock object to track time and control FPS
     clock = pygame.time.Clock()
@@ -166,14 +169,17 @@ def main():
         #3. RENDERING
         screen.fill((30, 30, 30)) # Fill the entire screen with dark grey.
 
-        board.draw(screen)
+        board.draw(screen, tile_surfaces)
         board.draw_powerups(screen, explosions, powerup_surfaces)
         for bomb in bombs:
             bomb.draw(screen, bomb_surface)
         for explosion in explosions:
             explosion.draw(screen, explosion_surfaces)
         for id_player, current_player in players.items():
-            current_player.draw(screen, PLAYER_COLOR[id_player])
+            if id_player == 1:
+                current_player.draw(screen, player1_surfaces)
+            else:
+                current_player.draw(screen, player2_surfaces)
 
         if state == GameState.GAME_OVER:
             screen_game_over(screen, winner)

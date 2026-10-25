@@ -43,6 +43,26 @@ EXPLOSION_IMAGES = {
     "vertical": "assets/images/explosions/vertical.png",
 }
 
+TILE_IMAGES = {
+    TileType.EMPTY: "assets/images/tiles/empty.png",
+    TileType.DESTRUCTIBLE: "assets/images/tiles/destructible.png",
+    TileType.WALL:"assets/images/tiles/wall.png",
+}
+
+PLAYER1_IMAGES = {
+    "UP": "assets/images/players/player1_up.png",
+    "RIGHT": "assets/images/players/player1_right.png",
+    "LEFT": "assets/images/players/player1_left.png",
+    "DOWN": "assets/images/players/player1_down.png",
+}
+
+PLAYER2_IMAGES = {
+    "UP": "assets/images/players/player2_up.png",
+    "RIGHT": "assets/images/players/player2_right.png",
+    "LEFT": "assets/images/players/player2_left.png",
+    "DOWN": "assets/images/players/player2_down.png",
+}
+
 BOMB_UP_COUNT = 5
 FIRE_UP_COUNT = 5
 SPEED_UP_COUNT = 4

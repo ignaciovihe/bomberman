@@ -147,7 +147,7 @@ class Player():
         else:
             self.current_direction = None
 
-    def draw(self, screen, color) -> None:
+    def draw(self, screen, surfaces) -> None:
         """Draw the player using its assigned color or red if defeated.
 
         Args:
@@ -155,9 +155,16 @@ class Player():
             color: Player's assigned color.
         """
         if self.alive:
-            pygame.draw.rect(screen,color, (self.x, self.y, PLAYER_SIZE, PLAYER_SIZE))
+            #pygame.draw.rect(screen,color, (self.x, self.y, PLAYER_SIZE, PLAYER_SIZE))
+            direction = self.current_direction or "DOWN"
+            offset = (TILE_SIZE - PLAYER_SIZE) / 2
+            screen.blit(surfaces[direction], (self.x - offset, self.y - offset))
         else:
             pygame.draw.rect(screen,"red", (self.x, self.y, PLAYER_SIZE, PLAYER_SIZE))
+            
+            
+
+
 
     def apply_powerup(self, power_up: PowerUp) -> None:
         """Apply the collected power-up effect to the player.
