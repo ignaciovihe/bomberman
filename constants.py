@@ -54,6 +54,7 @@ PLAYER1_IMAGES = {
     "RIGHT": "assets/images/players/player1_right.png",
     "LEFT": "assets/images/players/player1_left.png",
     "DOWN": "assets/images/players/player1_down.png",
+    "END" : "assets/images/players/player1_end.png",
 }
 
 PLAYER2_IMAGES = {
@@ -61,6 +62,7 @@ PLAYER2_IMAGES = {
     "RIGHT": "assets/images/players/player2_right.png",
     "LEFT": "assets/images/players/player2_left.png",
     "DOWN": "assets/images/players/player2_down.png",
+    "END" : "assets/images/players/player2_end.png",
 }
 
 BOMB_UP_COUNT = 5

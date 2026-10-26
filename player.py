@@ -144,8 +144,7 @@ class Player():
                     vector_direction = DIRECTIONS[self.current_direction]
 
                     can_move = self._move(dt, self.current_direction, vector_direction, board, bombs)
-        else:
-            self.current_direction = None
+
 
     def draw(self, screen, surfaces) -> None:
         """Draw the player using its assigned color or red if defeated.
@@ -154,13 +153,12 @@ class Player():
             screen: Pygame surface on which to draw the player.
             color: Player's assigned color.
         """
+        direction = self.current_direction or "DOWN"
+        offset = (TILE_SIZE - PLAYER_SIZE) / 2
         if self.alive:
-            #pygame.draw.rect(screen,color, (self.x, self.y, PLAYER_SIZE, PLAYER_SIZE))
-            direction = self.current_direction or "DOWN"
-            offset = (TILE_SIZE - PLAYER_SIZE) / 2
             screen.blit(surfaces[direction], (self.x - offset, self.y - offset))
         else:
-            pygame.draw.rect(screen,"red", (self.x, self.y, PLAYER_SIZE, PLAYER_SIZE))
+            screen.blit(surfaces["END"], (self.x - offset, self.y - offset))
             
             
 
