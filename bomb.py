@@ -1,4 +1,4 @@
-from constants import PLAYER_SIZE, BOMB_RADIUS,TILE_SIZE, EXPLOSION_DIRECTIONS
+from constants import PLAYER_SIZE, TILE_SIZE, EXPLOSION_DIRECTIONS
 from board import Board
 from tile import TileType
 import pygame

@@ -7,8 +7,7 @@ from tile import TileType
 from power_up import PowerUp
 from constants import (
     BOARD_COLS, 
-    BOARD_ROWS, 
-    TILE_COLORS, 
+    BOARD_ROWS,  
     TILE_SIZE, 
     PLAYER_SIZE, 
     SPAWN_CLEAR_TILES, 

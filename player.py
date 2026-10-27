@@ -12,7 +12,6 @@ from constants import (
 from board import Board
 from bomb import Bomb
 from power_up import PowerUp
-import pygame
 
 # Represents a player in the game
 class Player():

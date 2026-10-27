@@ -4,11 +4,16 @@ from board import Board
 from bomb import Bomb
 from explosion import Explosion
 from game_state import GameState
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT, DIRECTIONS_P1, DIRECTIONS_P2, PLAYER_COLOR
-from ui import screen_game_over
-from pprint import pprint
-from tile import TileType
-from assets import load_powerup_images, load_bomb_image, load_explosion_images, load_tiles_images, load_playe1_images, load_playe2_images
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT, DIRECTIONS_P1, DIRECTIONS_P2
+from ui import screen_game_over, screen_menu, create_menu
+from assets import (
+    load_powerup_images, 
+    load_bomb_image, 
+    load_explosion_images, 
+    load_tiles_images, 
+    load_playe1_images, 
+    load_playe2_images
+    )
 
 def place_bomb(player: Player, bombs: list[Bomb]):
     if player.current_bombs < player.max_bombs:
@@ -22,6 +27,34 @@ def trigger_chain_reactions(affected_tiles, bombs: list[Bomb]):
     for bomb in bombs:
         if bomb.tile in affected_tiles:
             bomb.timer = 0
+
+def new_game():
+    #Create a new board
+    board = Board()
+
+    # Create the new players
+    player = Player(1, 45, 45)
+    player_2 = Player(2, 525, 445)
+
+    players = {
+        1: player,
+        2: player_2
+    }
+
+    #This list contain the bombs set by the users
+    bombs: list[Bomb] = []
+
+    #This list contain the active explosions.
+    explosions: list[Explosion] = []
+
+    # This list contain the directions pressed in order. It helps to get a fluent movement.
+    pressed_directions ={
+        1: [],
+        2: []
+    }
+
+    return board, players, bombs, explosions, pressed_directions
+
 
 
 def main():
@@ -38,39 +71,19 @@ def main():
     player1_surfaces = load_playe1_images()
     player2_surfaces = load_playe2_images()
 
+    # Prepare the menu screen (create fonts, render texts)
+    items_menu = create_menu()
+
     # Create a Clock object to track time and control FPS
     clock = pygame.time.Clock()
 
-    #Create a new board
-    board = Board()
-    pprint(board.power_ups)
-
-    # Create the new players
-    player = Player(1, 45, 45)
-    player_2 = Player(2, 525, 445)
-
-    players = {
-        1: player,
-        2: player_2
-    }
-
-    # This list contain the directions pressed in order. It helps to get a fluent movement.
-    pressed_directions ={
-        1: [],
-        2: []
-    }
-
-    #This list contain the bombs set by the users
-    bombs: list[Bomb] = []
-
-    #This list contain the active explosions.
-    explosions: list[Explosion] = []
+    board, players, bombs, explosions, pressed_directions = new_game()
 
     # Variable to control the main game loop
     running = True
 
     # Variable to control the state of the game
-    state = GameState.PLAYING
+    state = GameState.MENU
 
     # Variable to set the winner
     winner = None
@@ -89,7 +102,13 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if state in (GameState.PLAYING, GameState.RESOLVING):
+
+            if state == GameState.MENU:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        state = GameState.PLAYING
+
+            elif state in (GameState.PLAYING, GameState.RESOLVING):
                 if event.type == pygame.KEYDOWN:
                     if (event.key in DIRECTIONS_P1) and (DIRECTIONS_P1[event.key] not in pressed_directions[1]):
                         pressed_directions[1].append(DIRECTIONS_P1[event.key])
@@ -110,6 +129,15 @@ def main():
 
                 if (event.key in DIRECTIONS_P2) and (DIRECTIONS_P2[event.key] in pressed_directions[2]):
                     pressed_directions[2].remove(DIRECTIONS_P2[event.key])
+
+            if state == GameState.GAME_OVER:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_r:
+                        board, players, bombs, explosions, pressed_directions = new_game()
+                        winner= None
+                        state = GameState.PLAYING
+                        resolving_timer = 0.3
+
 
 
         #2. UPDATE
@@ -169,20 +197,23 @@ def main():
         #3. RENDERING
         screen.fill((30, 30, 30)) # Fill the entire screen with dark grey.
 
-        board.draw(screen, tile_surfaces)
-        board.draw_powerups(screen, explosions, powerup_surfaces)
-        for bomb in bombs:
-            bomb.draw(screen, bomb_surface)
-        for explosion in explosions:
-            explosion.draw(screen, explosion_surfaces)
-        for id_player, current_player in players.items():
-            if id_player == 1:
-                current_player.draw(screen, player1_surfaces)
-            else:
-                current_player.draw(screen, player2_surfaces)
+        if state == GameState.MENU:
+            screen_menu(screen, items_menu)
+        else:
+            board.draw(screen, tile_surfaces)
+            board.draw_powerups(screen, explosions, powerup_surfaces)
+            for bomb in bombs:
+                bomb.draw(screen, bomb_surface)
+            for explosion in explosions:
+                explosion.draw(screen, explosion_surfaces)
+            for id_player, current_player in players.items():
+                if id_player == 1:
+                    current_player.draw(screen, player1_surfaces)
+                else:
+                    current_player.draw(screen, player2_surfaces)
+            if state == GameState.GAME_OVER:
+                screen_game_over(screen, winner)
 
-        if state == GameState.GAME_OVER:
-            screen_game_over(screen, winner)
 
         # Update the display to show everything we just drew
         pygame.display.flip()
