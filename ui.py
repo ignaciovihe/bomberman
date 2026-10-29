@@ -7,12 +7,12 @@ def create_menu()-> list[tuple[pygame.Surface, pygame.Rect]]:
     spacing_1 = 25
     spacing_2 = 15
 
-    title_font = pygame.font.Font(None, 50)
-    instructions_font = pygame.font.Font(None, 32)
-    mode_font = pygame.font.Font(None, 20)
+    title_font = pygame.font.SysFont("dejavusans", 50)
+    instructions_font = pygame.font.SysFont("dejavusans", 32)
+    mode_font = pygame.font.SysFont("dejavusans", 20)
 
-    title = title_font.render("BOMBERMAN", True, "yellow")
-    instructions = instructions_font.render("Press ENTER to play", True, "white")
+    title = title_font.render("BOMBERMAN", True, "#F4C95D")
+    instructions = instructions_font.render("Press ENTER to play", True, "#FFFFFF")
     mode = mode_font.render("2 Players  -  Local Multiplayer", True, "grey")
 
     total_height = (
@@ -41,13 +41,41 @@ def screen_menu(screen: pygame.Surface, menu_items: list[tuple[pygame.Surface, p
         screen.blit(text,rect)
 
 
-def screen_game_over(screen: pygame.Surface, winner):
-    font = pygame.font.Font(None, 64)
+def create_game_over(screen: pygame.Surface, winner):
+
+    spacing = 25
+    
+    winner_font = pygame.font.SysFont("dejavusans", 32, bold=True)
+    instructions_font = pygame.font.SysFont("dejavusans", 20)
+
     if winner == 0:
-        text = font.render("DRAW", True, "white")
+        winner_text = winner_font.render("DRAW", True, "#F4C95D")
     elif winner == 1:
-        text = font.render("PLAYER 1 WINS", True, "white")
+        winner_text = winner_font.render("PLAYER BLUE WINS", True, "#F4C95D")
     else:
-        text = font.render("PLAYER 2 WINS", True, "white")
-    text_rect = text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
-    screen.blit(text,text_rect)
+        winner_text = winner_font.render("PLAYER RED WINS", True, "#F4C95D") 
+    instructions = instructions_font.render("Press R to play again", True, "#FFFFFF")
+
+    total_height = (
+        winner_text.get_height()
+        + spacing
+        + instructions.get_height()
+    )
+
+    start_y = (SCREEN_HEIGHT - total_height) // 2
+    center_x = SCREEN_WIDTH // 2
+
+    winner_rect = winner_text.get_rect(midtop=(center_x, start_y))
+    instructions_rect = instructions.get_rect(midtop=(center_x, winner_rect.bottom + spacing))
+    background_rect = winner_rect.union(instructions_rect)
+    background_rect = background_rect.inflate(40, 40)
+
+    return [
+        (winner_text, winner_rect),
+        (instructions , instructions_rect)
+    ], background_rect
+
+def screen_game_over(screen: pygame.Surface, game_over_items: list[tuple[pygame.Surface, pygame.Rect]], background) -> None:
+    pygame.draw.rect(screen, "#202632", background, border_radius=12)
+    for text, rect in game_over_items:
+        screen.blit(text,rect)

@@ -5,7 +5,7 @@ from bomb import Bomb
 from explosion import Explosion
 from game_state import GameState
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT, DIRECTIONS_P1, DIRECTIONS_P2
-from ui import screen_game_over, screen_menu, create_menu
+from ui import screen_game_over, screen_menu, create_menu, create_game_over
 from assets import (
     load_powerup_images, 
     load_bomb_image, 
@@ -73,6 +73,7 @@ def main():
 
     # Prepare the menu screen (create fonts, render texts)
     items_menu = create_menu()
+
 
     # Create a Clock object to track time and control FPS
     clock = pygame.time.Clock()
@@ -193,6 +194,7 @@ def main():
                 elif not players[2].alive:
                     winner = 1
                 state = GameState.GAME_OVER
+                items_game_over, background_rect = create_game_over(screen, winner)
 
         #3. RENDERING
         screen.fill((30, 30, 30)) # Fill the entire screen with dark grey.
@@ -212,7 +214,7 @@ def main():
                 else:
                     current_player.draw(screen, player2_surfaces)
             if state == GameState.GAME_OVER:
-                screen_game_over(screen, winner)
+                screen_game_over(screen, items_game_over, background_rect)
 
 
         # Update the display to show everything we just drew
