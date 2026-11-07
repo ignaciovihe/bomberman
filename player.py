@@ -1,22 +1,25 @@
 
+import pygame
+
 from constants import (
-    DIRECTIONS, 
-    PLAYER_SIZE, 
-    TILE_SIZE, 
-    PLAYER_MOVE_MARGIN, 
-    SPEED_UP_INCREMENT, 
-    INITIAL_PLAYER_SPPED, 
+    DIRECTIONS,
+    PLAYER_SIZE,
+    TILE_SIZE,
+    PLAYER_MOVE_MARGIN,
+    SPEED_UP_INCREMENT,
+    INITIAL_PLAYER_SPPED,
     MAX_PLAYER_SPEED,
-    )
+)
 
 from board import Board
 from bomb import Bomb
 from power_up import PowerUp
 
-# Represents a player in the game
+
+# Represents a player in the game.
 class Player():
 
-    def __init__(self,id, x, y) -> None:
+    def __init__(self, id: int, x: float, y: float) -> None:
         """Initialize a player with its position and initial attributes."""
         self.id = id
         self.x = float(x)
@@ -44,7 +47,7 @@ class Player():
         margin = (TILE_SIZE - PLAYER_SIZE) / 2
         return left_edge + margin
 
-    def _is_inside_margin(self, aligned_rail, current_pos) -> bool:
+    def _is_inside_margin(self, aligned_rail: float, current_pos: float) -> bool:
         """Check whether a position is within the allowed alignment margin.
 
         Args:
@@ -56,7 +59,7 @@ class Player():
         """
         return (aligned_rail - PLAYER_MOVE_MARGIN <= current_pos <= aligned_rail + PLAYER_MOVE_MARGIN)
 
-    def _can_move_through_bombs(self, x, y, bombs: list[Bomb]) -> bool:
+    def _can_move_through_bombs(self, x: float, y: float, bombs: list[Bomb]) -> bool:
         """Check whether the player can move to a position without being blocked by bombs.
 
         Args:
@@ -86,7 +89,7 @@ class Player():
         y = int(center[1] // TILE_SIZE)
         return (x,y)
 
-    def _move(self, dt, direction, vector_d, board: Board, bombs: list[Bomb]) -> bool:
+    def _move(self, dt: float, direction: str, vector_d: tuple[int, int], board: Board, bombs: list[Bomb]) -> bool:
         """Attempt to move the player in a direction while respecting collisions and alignment.
 
         Args:
@@ -121,8 +124,7 @@ class Player():
                         return True
         return False
 
-
-    def update(self, dt, pressed_directions, board: Board, bombs: list[Bomb]) -> None:
+    def update(self, dt: float, pressed_directions: list[str], board: Board, bombs: list[Bomb]) -> None:
         """Update the player's movement based on pressed directions.
 
         Args:
@@ -144,13 +146,12 @@ class Player():
 
                     can_move = self._move(dt, self.current_direction, vector_direction, board, bombs)
 
-
-    def draw(self, screen, surfaces) -> None:
-        """Draw the player using its assigned color or red if defeated.
+    def draw(self, screen: pygame.Surface, surfaces: dict[str, pygame.Surface]) -> None:
+        """Draw the player's directional sprite or death sprite.
 
         Args:
             screen: Pygame surface on which to draw the player.
-            color: Player's assigned color.
+            surfaces: Dictionary of directional and death sprites.
         """
         direction = self.current_direction or "DOWN"
         offset = (TILE_SIZE - PLAYER_SIZE) / 2
@@ -158,10 +159,6 @@ class Player():
             screen.blit(surfaces[direction], (self.x - offset, self.y - offset))
         else:
             screen.blit(surfaces["END"], (self.x - offset, self.y - offset))
-            
-            
-
-
 
     def apply_powerup(self, power_up: PowerUp) -> None:
         """Apply the collected power-up effect to the player.
